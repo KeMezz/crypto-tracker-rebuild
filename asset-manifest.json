@@ -1,13 +1,13 @@
 {
   "files": {
     "main.css": "/crypto-tracker-rebuild/static/css/main.f51b46b4.css",
-    "main.js": "/crypto-tracker-rebuild/static/js/main.cad19545.js",
+    "main.js": "/crypto-tracker-rebuild/static/js/main.a6fd7357.js",
     "index.html": "/crypto-tracker-rebuild/index.html",
     "main.f51b46b4.css.map": "/crypto-tracker-rebuild/static/css/main.f51b46b4.css.map",
-    "main.cad19545.js.map": "/crypto-tracker-rebuild/static/js/main.cad19545.js.map"
+    "main.a6fd7357.js.map": "/crypto-tracker-rebuild/static/js/main.a6fd7357.js.map"
   },
   "entrypoints": [
     "static/css/main.f51b46b4.css",
-    "static/js/main.cad19545.js"
+    "static/js/main.a6fd7357.js"
   ]
 }

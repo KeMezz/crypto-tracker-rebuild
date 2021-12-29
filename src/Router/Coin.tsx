@@ -1,8 +1,11 @@
 import { motion, Variants } from "framer-motion";
 import { useQuery } from "react-query";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, Routes, Route, useMatch } from "react-router-dom";
 import styled from "styled-components";
 import { fetchCoinInfo, fetchCoinTickers } from "../api";
+import Toolbar from "../Components/Toolbar";
+import Chart from "./Chart";
+import Price from "./Price";
 
 interface iCoinInfo {
   id: string;
@@ -74,7 +77,6 @@ const TopBox = styled(motion.div)`
     height: 100px;
   }
   &:first-child {
-    border: 6px solid ${(props) => props.theme.accentColor};
     @media (max-width: 1000px) {
       grid-column: 1 / -1;
     }
@@ -97,8 +99,12 @@ const TopBox = styled(motion.div)`
 `;
 
 const Desc = styled(motion.div)`
+  margin-top: 30px;
   padding: 30px 12px;
   line-height: 1.6;
+  @media (max-width: 420px) {
+    margin-top: 10px;
+  }
   h2 {
     font-size: 40px;
     font-weight: 700;
@@ -113,6 +119,47 @@ const Desc = styled(motion.div)`
       font-size: 18px;
     }
   }
+`;
+
+const SelectorContainer = styled(motion.section)`
+  margin-top: 36px;
+  margin-bottom: 100px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  @media (max-width: 420px) {
+    margin-top: 20px;
+  }
+`;
+const Selector = styled(motion.div)<{ clicked: boolean }>`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 18px 28px;
+  text-align: center;
+  background-color: ${(props) =>
+    props.clicked ? props.theme.textColor : props.theme.cardColor};
+  color: ${(props) =>
+    props.clicked ? props.theme.cardColor : props.theme.textColor};
+  font-size: 20px;
+  border-radius: 16px;
+  font-weight: 500;
+  transition: background-color 0.2s ease-in;
+  @media (min-width: 420px) {
+    &:hover {
+      background-color: ${(props) => props.theme.textColor};
+      color: ${(props) => props.theme.cardColor};
+    }
+  }
+  @media (max-width: 420px) {
+    padding: 12px 20px;
+    font-size: 16px;
+    line-height: 1.4;
+  }
+`;
+
+const RoutesContainer = styled.section`
+  grid-column: 1/ -1;
 `;
 
 const topContainerVariants: Variants = {
@@ -144,6 +191,21 @@ const descVariants: Variants = {
   },
 };
 
+const selectorVariants: Variants = {
+  initial: {
+    opacity: 0,
+    y: 20,
+  },
+  animate: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      delay: 0.6,
+      duration: 0.3,
+    },
+  },
+};
+
 function Coin() {
   const { coinId } = useParams();
   const { isLoading: infoLoading, data: infoData } = useQuery<iCoinInfo>(
@@ -151,10 +213,15 @@ function Coin() {
     () => fetchCoinInfo(coinId)
   );
   const { isLoading: tickersLoading, data: tickersData } =
-    useQuery<iCoinTickers>([coinId, "tickers"], () => fetchCoinTickers(coinId));
+    useQuery<iCoinTickers>(
+      [coinId, "tickers"],
+      () => fetchCoinTickers(coinId),
+      { refetchInterval: 1000 }
+    );
+  const priceMatch = useMatch("/:coinId/price");
+  const chartMatch = useMatch("/:coinId/chart");
 
   const isLoading = infoLoading && tickersLoading;
-  console.log(tickersData);
 
   return isLoading ? (
     <Header>loading...</Header>
@@ -193,6 +260,43 @@ function Coin() {
           <p>{infoData?.description}</p>
         </Desc>
       ) : null}
+      <hr />
+      <SelectorContainer
+        variants={selectorVariants}
+        initial="initial"
+        animate="animate"
+      >
+        <Link to={`/${coinId}/price`}>
+          <Selector clicked={priceMatch !== null ? true : false}>
+            Show Price
+          </Selector>
+        </Link>
+        <Link to={`/${coinId}/chart`}>
+          <Selector clicked={chartMatch !== null ? true : false}>
+            Show Chart
+          </Selector>
+        </Link>
+        <RoutesContainer>
+          <Routes>
+            <Route
+              path="/price"
+              element={
+                <Price
+                  percent1h={tickersData?.percent_change_1h}
+                  percent24h={tickersData?.percent_change_24h}
+                  percent7d={tickersData?.percent_change_7d}
+                  marketCap={tickersData?.market_cap_usd}
+                  totalSupply={tickersData?.total_supply}
+                  maxSupply={tickersData?.max_supply}
+                  priceBTC={tickersData?.price_btc}
+                  coinName={infoData?.name}
+                />
+              }
+            ></Route>
+            <Route path="/chart" element={<Chart coinId={coinId} />}></Route>
+          </Routes>
+        </RoutesContainer>
+      </SelectorContainer>
     </>
   );
 }

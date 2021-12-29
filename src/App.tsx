@@ -1,5 +1,8 @@
-import { createGlobalStyle } from "styled-components";
+import { createGlobalStyle, ThemeProvider } from "styled-components";
+import { darkTheme, lightTheme } from "./theme";
 import Router from "./Router";
+import { useRecoilValue } from "recoil";
+import { isDark } from "./atom";
 
 const GlobalStyle = createGlobalStyle`
   body {
@@ -17,10 +20,13 @@ const GlobalStyle = createGlobalStyle`
 `;
 
 function App() {
+  const dark = useRecoilValue(isDark);
   return (
     <>
-      <GlobalStyle />
-      <Router />
+      <ThemeProvider theme={dark ? darkTheme : lightTheme}>
+        <GlobalStyle />
+        <Router />
+      </ThemeProvider>
     </>
   );
 }

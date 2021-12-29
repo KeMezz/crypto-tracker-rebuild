@@ -1,4 +1,5 @@
 import { Routes, Route, BrowserRouter } from "react-router-dom";
+import Toolbar from "./Components/Toolbar";
 import Coin from "./Router/Coin";
 import Home from "./Router/Home";
 
@@ -8,8 +9,9 @@ function Router() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Home />}></Route>
-          <Route path="/:coinId" element={<Coin />}></Route>
+          <Route path="/:coinId/*" element={<Coin />}></Route>
         </Routes>
+        <Toolbar />
       </BrowserRouter>
     </>
   );

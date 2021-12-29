@@ -6,5 +6,6 @@ declare module "styled-components" {
     accentColor: string;
     bgColor: string;
     cardColor: string;
+    toolbarColor: string;
   }
 }

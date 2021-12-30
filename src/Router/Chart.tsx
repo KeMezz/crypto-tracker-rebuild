@@ -82,20 +82,3 @@ function Chart({ coinId }: iChart) {
 }
 
 export default Chart;
-
-// series={[
-//   {
-//     data: data?.map((price) => {
-//       const a = price.time_close;
-//       let b = a.split("T")[0];
-//       let c = b.split("-");
-//       let d = new Date(Number(c[0]), Number(c[1]), Number(c[2]));
-//       return [
-//         {
-//           x: d.getTime(),
-//           y: [price.open, price.high, price.low, price.close],
-//         },
-//       ];
-//     }),
-//   },
-// ]}

@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useSetRecoilState } from "recoil";
 import styled from "styled-components";
-import { coinCount, isDark } from "../atom";
+import { isDark } from "../atom";
 
 const Container = styled(motion.div)`
   position: fixed;
@@ -11,6 +11,7 @@ const Container = styled(motion.div)`
   bottom: 0;
   left: 0;
   right: 0;
+  margin: 0 auto;
   height: 10vh;
   min-height: 80px;
   width: 100%;
@@ -22,15 +23,14 @@ const Container = styled(motion.div)`
   align-content: center;
   gap: 20px;
   padding: 0 20px;
-  margin: 0 auto;
   @media (min-width: 600px) {
     width: 400px;
-    bottom: 50px;
+    bottom: 30px;
     border-radius: 20px;
   }
 `;
 
-const Btn = styled.div`
+const Btn = styled(motion.div)`
   cursor: pointer;
   width: 100%;
   height: 60px;
@@ -55,32 +55,45 @@ const Btn = styled.div`
 function Toolbar() {
   const scrollHide = useAnimation();
   const setDark = useSetRecoilState(isDark);
-  const { scrollY } = useViewportScroll();
-  const setCount = useSetRecoilState(coinCount);
+  const { scrollY, scrollYProgress } = useViewportScroll();
+  const [scrollDown, setScrollDown] = useState(false);
   useEffect(() => {
     let lastPos = scrollY.get();
     scrollY.onChange(() => {
-      if (scrollY.get() < lastPos) {
-        scrollHide.start({ y: 0 });
+      if (scrollYProgress.get() < 0.01) {
+        setScrollDown(false);
       }
-      if (scrollY.get() > lastPos) {
-        scrollHide.start({ y: 200 });
+      if (scrollYProgress.get() > 0.1) {
+        if (scrollY.get() < lastPos - 10) {
+          setScrollDown(false);
+        }
+        if (scrollY.get() > lastPos + 10) {
+          setScrollDown(true);
+        }
       }
       lastPos = scrollY.get();
     });
-  }, [scrollY]);
+  }, [scrollY, scrollYProgress, scrollHide]);
+  useEffect(() => {
+    if (scrollDown) scrollHide.start({ y: 200 });
+    if (!scrollDown) scrollHide.start({ y: 0 });
+  }, [scrollDown]);
   return (
-    <Container
-      initial={{ y: 0 }}
-      animate={scrollHide}
-      transition={{ duration: 0.2, type: "spring" }}
-    >
-      <Btn className="xi-moon" onClick={() => setDark((prev) => !prev)}></Btn>
-      <Link to="/">
-        <Btn className="xi-home"></Btn>
-      </Link>
-      <Btn className="xi-search"></Btn>
-    </Container>
+    <>
+      <Container
+        initial={{ y: 0 }}
+        animate={scrollHide}
+        transition={{ duration: 0.5, type: "spring" }}
+      >
+        <Btn className="xi-moon" onClick={() => setDark((prev) => !prev)}></Btn>
+        <Link to="/">
+          <Btn className="xi-home"></Btn>
+        </Link>
+        <Link to="/search">
+          <Btn className="xi-search"></Btn>
+        </Link>
+      </Container>
+    </>
   );
 }
 

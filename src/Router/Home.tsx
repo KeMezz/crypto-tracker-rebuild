@@ -1,11 +1,12 @@
 import { motion, useViewportScroll } from "framer-motion";
 import { useEffect } from "react";
+import { Helmet } from "react-helmet";
 import { useQuery } from "react-query";
 import { Link } from "react-router-dom";
-import { useRecoilState, useSetRecoilState } from "recoil";
+import { useRecoilState } from "recoil";
 import styled from "styled-components";
 import { fetchAllCoins } from "../api";
-import { coinCount, isDark } from "../atom";
+import { coinCount } from "../atom";
 
 interface iCoins {
   id: string;
@@ -102,10 +103,13 @@ function Home() {
       scrollYProgress.onChange(() =>
         scrollYProgress.get() > 1 ? setCount((prev) => prev + 40) : null
       ),
-    [scrollYProgress]
+    [scrollYProgress, setCount]
   );
   return (
     <>
+      <Helmet>
+        <title>Home | Crypto Tracker</title>
+      </Helmet>
       <Header>
         <span>crypto</span>
         <b>tracker</b>

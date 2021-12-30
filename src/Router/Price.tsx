@@ -1,3 +1,4 @@
+import { motion, Variants } from "framer-motion";
 import styled from "styled-components";
 
 interface iPrice {
@@ -11,7 +12,7 @@ interface iPrice {
   coinName?: string;
 }
 
-const Container = styled.ul`
+const Container = styled(motion.ul)`
   margin-top: 30px;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(400px, auto));
@@ -22,7 +23,7 @@ const Container = styled.ul`
     grid-template-columns: repeat(auto-fit, minmax(200px, auto));
   }
 `;
-const PriceBox = styled.li`
+const PriceBox = styled(motion.li)`
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -51,6 +52,25 @@ const PriceBox = styled.li`
   }
 `;
 
+const containerVariants: Variants = {
+  animate: {
+    transition: {
+      staggerChildren: 0.1,
+    },
+  },
+};
+
+const elementVariants: Variants = {
+  initial: {
+    opacity: 0,
+    y: 20,
+  },
+  animate: {
+    opacity: 1,
+    y: 0,
+  },
+};
+
 function Price({
   percent1h,
   percent24h,
@@ -62,32 +82,32 @@ function Price({
   coinName,
 }: iPrice) {
   return (
-    <Container>
-      <PriceBox>
+    <Container variants={containerVariants} initial="initial" animate="animate">
+      <PriceBox variants={elementVariants}>
         <p>Market Capitalization</p>
         <h2>{marketCap ? `$${marketCap}` : "N/A"}</h2>
       </PriceBox>
-      <PriceBox>
+      <PriceBox variants={elementVariants}>
         <p>Max Supply</p>
         <h2>{maxSupply ? `$${maxSupply}` : "N/A"}</h2>
       </PriceBox>
-      <PriceBox>
+      <PriceBox variants={elementVariants}>
         <p>Total Supply</p>
         <h2>{totalSupply ? `$${totalSupply}` : "N/A"}</h2>
       </PriceBox>
-      <PriceBox>
+      <PriceBox variants={elementVariants}>
         <p>Changes in 1 hour</p>
-        <h2>{percent1h}%</h2>
+        <h2>{percent1h ? `${percent1h}%` : "N/A"}</h2>
       </PriceBox>
-      <PriceBox>
+      <PriceBox variants={elementVariants}>
         <p>Changes in 24 hours</p>
-        <h2>{percent24h}%</h2>
+        <h2>{percent24h ? `${percent24h}%` : "N/A"}</h2>
       </PriceBox>
-      <PriceBox>
+      <PriceBox variants={elementVariants}>
         <p>Changes in 7 Days</p>
-        <h2>{percent7d}%</h2>
+        <h2>{percent7d ? `${percent7d}%` : "N/A"}</h2>
       </PriceBox>
-      <PriceBox>
+      <PriceBox variants={elementVariants}>
         <p>{coinName} in BTC</p>
         <h2>{priceBTC ? `${Number(priceBTC).toFixed(3)} BTC` : "N/A"}</h2>
       </PriceBox>

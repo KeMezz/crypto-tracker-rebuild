@@ -23,3 +23,9 @@ export function fetchOHLCV(coinId?: string) {
     `https://api.coinpaprika.com/v1/coins/${coinId}/ohlcv/historical?start=${start}&end=${end}`
   ).then((response) => response.json());
 }
+
+export function fetchSearch(searchId: string) {
+  return fetch(
+    `https://api.coinpaprika.com/v1/search/?c=currencies&q=${searchId}`
+  ).then((response) => response.json());
+}

@@ -3,9 +3,9 @@ import { useQuery } from "react-query";
 import { Link, useParams, Routes, Route, useMatch } from "react-router-dom";
 import styled from "styled-components";
 import { fetchCoinInfo, fetchCoinTickers } from "../api";
-import Toolbar from "../Components/Toolbar";
 import Chart from "./Chart";
 import Price from "./Price";
+import { Helmet } from "react-helmet";
 
 interface iCoinInfo {
   id: string;
@@ -45,6 +45,8 @@ const Header = styled.header`
   align-content: center;
   padding: 50px 0;
   text-transform: uppercase;
+  text-align: center;
+  line-height: 1.4;
   font-size: 40px;
   font-weight: 700;
   @media (max-width: 420px) {
@@ -121,6 +123,15 @@ const Desc = styled(motion.div)`
   }
 `;
 
+const Hr = styled(motion.hr)`
+  margin-top: 50px;
+  margin-bottom: 30px;
+  transform-origin: left;
+  @media (max-width: 420px) {
+    margin-top: 30px;
+  }
+`;
+
 const SelectorContainer = styled(motion.section)`
   margin-top: 36px;
   margin-bottom: 100px;
@@ -191,6 +202,18 @@ const descVariants: Variants = {
   },
 };
 
+const hrVariants: Variants = {
+  initial: {
+    scaleX: 0,
+  },
+  animate: {
+    scaleX: 1,
+    transition: {
+      duration: 2,
+    },
+  },
+};
+
 const selectorVariants: Variants = {
   initial: {
     opacity: 0,
@@ -227,6 +250,9 @@ function Coin() {
     <Header>loading...</Header>
   ) : (
     <>
+      <Helmet>
+        <title>{infoData?.name + ""} | Crypto Tracker</title>
+      </Helmet>
       <Header>{infoData?.name}</Header>
       <TopContainer
         variants={topContainerVariants}
@@ -238,12 +264,12 @@ function Coin() {
           <h2>
             {tickersData?.price_usd
               ? `$${Number(tickersData?.price_usd).toFixed(2)}`
-              : "Loading..."}
+              : "N/A"}
           </h2>
         </TopBox>
         <TopBox>
           <p>Rank</p>
-          <h2>#{infoData?.rank}</h2>
+          <h2>{infoData?.rank ? `#${infoData.rank}` : "N/A"}</h2>
         </TopBox>
         <TopBox>
           <p>Symbol</p>
@@ -260,7 +286,7 @@ function Coin() {
           <p>{infoData?.description}</p>
         </Desc>
       ) : null}
-      <hr />
+      <Hr variants={hrVariants} initial="initial" animate="animate" />
       <SelectorContainer
         variants={selectorVariants}
         initial="initial"

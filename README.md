@@ -1,4 +1,4 @@
-# Crypto Tracker Rebuild (개발 중)
+# Crypto Tracker Rebuild
 
 코인 파프리카에서 제공받은 정보를 바탕으로 다양한 암호화폐 정보를 추적 및 검색할 수 있는 리액트 기반 웹 앱입니다.
 

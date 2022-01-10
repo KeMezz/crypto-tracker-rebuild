@@ -13,6 +13,7 @@ const Container = styled(motion.div)`
   right: 0;
   margin: 0 auto;
   height: 10vh;
+  max-height: 100px;
   min-height: 80px;
   width: 100%;
   background-color: ${(props) => props.theme.toolbarColor};

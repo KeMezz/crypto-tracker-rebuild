@@ -2,8 +2,6 @@ import { useQuery } from "react-query";
 import { fetchOHLCV } from "../api";
 import styled from "styled-components";
 import ApexChart from "react-apexcharts";
-import { useRecoilValue } from "recoil";
-import { isDark } from "../atom";
 
 interface iChart {
   coinId?: string;
@@ -27,7 +25,6 @@ const Loader = styled.div`
 `;
 
 function Chart({ coinId }: iChart) {
-  const dark = useRecoilValue(isDark);
   const { isLoading, data } = useQuery<iOHLCV[]>([coinId, "OHLCV"], () =>
     fetchOHLCV(coinId)
   );
@@ -37,44 +34,42 @@ function Chart({ coinId }: iChart) {
         <Loader>Loading Charts...</Loader>
       ) : (
         <ApexChart
+          type="candlestick"
+          series={[
+            {
+              data: data?.map((price) => {
+                return {
+                  x: price.time_close,
+                  y: [price.open, price.high, price.low, price.close],
+                };
+              }),
+            },
+          ]}
           options={{
             chart: {
-              height: 100,
-              background: "transparent",
-              type: "line",
               toolbar: {
                 show: false,
               },
-            },
-            theme: {
-              mode: dark ? "dark" : "light",
-            },
-            stroke: { curve: "smooth" },
-            grid: { show: false },
-            yaxis: {
-              show: false,
-              axisBorder: { show: false },
-              axisTicks: { show: false },
+              background: "transparent",
             },
             xaxis: {
-              type: "datetime",
-              categories: data?.map((item) => item.time_close),
-              labels: { show: false },
-              axisBorder: { show: false },
-              axisTicks: { show: false },
+              axisBorder: {
+                show: false,
+              },
+              axisTicks: {
+                show: false,
+              },
+              labels: {
+                show: false,
+              },
             },
-            fill: {
-              type: "gradient",
-              gradient: { gradientToColors: ["blue"], stops: [0, 100] },
+            yaxis: {
+              show: false,
             },
-            tooltip: { y: { formatter: (price) => `$${price.toFixed(3)}` } },
+            grid: {
+              show: false,
+            },
           }}
-          series={[
-            {
-              name: "Price",
-              data: data?.map((item) => item.close),
-            },
-          ]}
         />
       )}
     </>

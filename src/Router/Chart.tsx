@@ -53,15 +53,11 @@ function Chart({ coinId }: iChart) {
               background: "transparent",
             },
             xaxis: {
-              axisBorder: {
-                show: false,
-              },
-              axisTicks: {
-                show: false,
-              },
-              labels: {
-                show: false,
-              },
+              type: "datetime",
+              categories: data?.map((item) => item.time_close),
+              axisBorder: { show: false },
+              axisTicks: { show: false },
+              labels: { show: false },
             },
             yaxis: {
               show: false,

@@ -92,7 +92,7 @@ function SearchResults() {
               <Result>
                 <div className="left">
                   <img
-                    src={`https://coinicons-api.vercel.app/api/icon/${result?.symbol.toLowerCase()}`}
+                    src={`https://cryptoicon-api.vercel.app/api/icon/${result?.symbol.toLowerCase()}`}
                     alt={result?.name}
                   />
                   <h3>{result?.name}</h3>

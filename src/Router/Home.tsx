@@ -127,7 +127,7 @@ function Home() {
               <List>
                 <div className="left">
                   <img
-                    src={`https://coinicons-api.vercel.app/api/icon/${item.symbol.toLowerCase()}`}
+                    src={`https://cryptoicon-api.vercel.app/api/icon/${item.symbol.toLowerCase()}`}
                     alt={item.name}
                   />
                   <h3>{item.name}</h3>

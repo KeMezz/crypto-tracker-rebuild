@@ -7,6 +7,7 @@ import { useRecoilState } from "recoil";
 import styled from "styled-components";
 import { fetchAllCoins } from "../api";
 import { coinCount } from "../atom";
+import { coinPath, isCoinId } from "../navigation";
 
 interface iCoins {
   id: string;
@@ -118,10 +119,10 @@ function Home() {
         <Loader>Loading...</Loader>
       ) : (
         <Lists>
-          {data?.slice(0, count)?.map((item) => (
+          {data?.filter((item) => isCoinId(item.id)).slice(0, count)?.map((item) => (
             <Link
               key={item.id}
-              to={`/${item.id}`}
+              to={coinPath(item.id)}
               state={{ name: item.name, id: item.id }}
             >
               <List>

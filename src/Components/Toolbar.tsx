@@ -78,7 +78,7 @@ function Toolbar() {
   useEffect(() => {
     if (scrollDown) scrollHide.start({ y: 200 });
     if (!scrollDown) scrollHide.start({ y: 0 });
-  }, [scrollDown]);
+  }, [scrollDown, scrollHide]);
   return (
     <>
       <Container

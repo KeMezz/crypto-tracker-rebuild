@@ -1,7 +1,8 @@
 import { motion } from "framer-motion";
 import { useForm } from "react-hook-form";
-import { Route, Routes, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { searchTermFromPath } from "../navigation";
 import SearchResults from "./SearchResults";
 
 const FormContainer = styled.div`
@@ -37,10 +38,17 @@ interface iForm {
 const ResultsContainer = styled.div``;
 
 function Search() {
-  const { register, handleSubmit, setValue } = useForm<iForm>();
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+  } = useForm<iForm>();
   const navigate = useNavigate();
+  const { pathname } = useLocation();
+  const searchTerm = searchTermFromPath(pathname);
   const searchValid = ({ search }: iForm) => {
-    navigate(`/search/${search}`);
+    navigate(`/search/${encodeURIComponent(search)}`);
     setValue("search", "");
   };
   return (
@@ -53,7 +61,12 @@ function Search() {
           transition={{ duration: 0.5, type: "spring" }}
         >
           <Input
-            {...register("search", { required: true })}
+            {...register("search", {
+              required: true,
+              validate: (value) =>
+                (value !== "." && value !== "..") ||
+                "Enter a search term other than . or ..",
+            })}
             placeholder="Search coins..."
             type="text"
             autoFocus
@@ -63,10 +76,9 @@ function Search() {
           />
         </Form>
       </FormContainer>
+      {errors.search?.message && <p role="alert">{errors.search.message}</p>}
       <ResultsContainer>
-        <Routes>
-          <Route path="/:searchId" element={<SearchResults />}></Route>
-        </Routes>
+        {searchTerm !== undefined && <SearchResults searchId={searchTerm} />}
       </ResultsContainer>
     </>
   );

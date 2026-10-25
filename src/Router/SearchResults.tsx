@@ -1,8 +1,9 @@
 import { motion } from "framer-motion";
 import { useQuery } from "react-query";
-import { Link, useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { fetchSearch } from "../api";
+import { coinPath, isCoinId } from "../navigation";
 
 interface iData {
   currencies: [
@@ -69,26 +70,25 @@ const Result = styled(motion.li)`
   }
 `;
 
-function SearchResults() {
-  const { searchId } = useParams();
+function SearchResults({ searchId }: { searchId: string }) {
   const { isLoading, data } = useQuery<iData>(
     [searchId, "search"],
-    () => fetchSearch(searchId + ""),
+    () => fetchSearch(searchId),
     {
       onError: () => {
         console.log("error occured!");
       },
     }
   );
-  console.log(data?.currencies[0]?.name);
+  const currencies = data?.currencies?.filter((result) => isCoinId(result?.id));
   return (
     <Container>
       {isLoading ? (
         <Loader>Searching...</Loader>
-      ) : data?.currencies[0] ? (
+      ) : currencies?.length ? (
         <Results>
-          {data?.currencies.map((result) => (
-            <Link to={`/${result?.id}`}>
+          {currencies.map((result) => (
+            <Link key={result?.id} to={coinPath(result?.id)}>
               <Result>
                 <div className="left">
                   <img

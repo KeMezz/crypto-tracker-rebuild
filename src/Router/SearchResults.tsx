@@ -88,7 +88,7 @@ function SearchResults() {
       ) : data?.currencies[0] ? (
         <Results>
           {data?.currencies.map((result) => (
-            <Link to={`/${result?.id}`}>
+            <Link key={result?.id} to={`/${result?.id}`}>
               <Result>
                 <div className="left">
                   <img

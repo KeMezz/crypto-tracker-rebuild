@@ -6,6 +6,7 @@ import { fetchCoinInfo, fetchCoinTickers } from "../api";
 import Chart from "./Chart";
 import Price from "./Price";
 import { Helmet } from "react-helmet";
+import { isCoinId } from "../navigation";
 
 interface iCoinInfo {
   id: string;
@@ -231,20 +232,24 @@ const selectorVariants: Variants = {
 
 function Coin() {
   const { coinId } = useParams();
+  const validCoinId = isCoinId(coinId);
   const { isLoading: infoLoading, data: infoData } = useQuery<iCoinInfo>(
     [coinId, "info"],
-    () => fetchCoinInfo(coinId)
+    () => fetchCoinInfo(coinId),
+    { enabled: validCoinId }
   );
   const { isLoading: tickersLoading, data: tickersData } =
     useQuery<iCoinTickers>(
       [coinId, "tickers"],
       () => fetchCoinTickers(coinId),
-      { refetchInterval: 1000 }
+      { refetchInterval: 1000, enabled: validCoinId }
     );
   const priceMatch = useMatch("/:coinId/price");
   const chartMatch = useMatch("/:coinId/chart");
 
   const isLoading = infoLoading && tickersLoading;
+
+  if (!validCoinId) return <Header>Invalid coin ID</Header>;
 
   return isLoading ? (
     <Header>loading...</Header>
@@ -292,12 +297,12 @@ function Coin() {
         initial="initial"
         animate="animate"
       >
-        <Link to={`/${coinId}/price`}>
+        <Link to="price">
           <Selector clicked={priceMatch !== null ? true : false}>
             Show Price
           </Selector>
         </Link>
-        <Link to={`/${coinId}/chart`}>
+        <Link to="chart">
           <Selector clicked={chartMatch !== null ? true : false}>
             Show Chart
           </Selector>
